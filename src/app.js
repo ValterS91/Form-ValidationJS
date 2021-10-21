@@ -4,32 +4,47 @@ let amount = document.querySelector("#amount");
 let firstName = document.querySelector("#fname");
 let lastName = document.querySelector("#lname");
 let city = document.querySelector("#city");
-let state = document.querySelector("#state");
+let states = document.querySelectorAll("option");
+let STATE = document.querySelector("#stateOptions");
 let cards = document.querySelector("#cards");
-let alert1 = document.querySelector("#alert1");
-let alert2 = document.querySelector("#alert2");
-let submit = document.querySelector("#send");
+let isFail = document.querySelector("#fail");
+let isSuccess = document.querySelector("#success");
+let submitButton = document.querySelector("form");
 let myPostalCode = document.querySelector("#code");
 
-let counter = 0;
+window.onload = function() {};
 
-window.onload = function() {
-  submit.addEventListener("click", () => {
-    if (counter == 9) {
-      isSuccess();
-    } else {
-      isFail();
-    }
-  });
-};
+submitButton.addEventListener("submit", event => {
+  event.preventDefault();
+  if (
+    cvc.classList.contains("is-valid") &&
+    amount.classList.contains("is-valid") &&
+    firstName.classList.contains("is-valid") &&
+    lastName.classList.contains("is-valid") &&
+    city.classList.contains("is-valid") &&
+    cardNumber.classList.contains("is-valid") &&
+    STATE.classList.contains("is-valid") &&
+    myPostalCode.classList.contains("is-valid")
+  ) {
+    isSuccess.classList.remove("d-none");
+    isSuccess.classList.add("d-block");
+    isFail.classList.remove("d-block");
+    isFail.classList.add("d-none");
+  } else {
+    isFail.classList.remove("d-none");
+    isFail.classList.add("d-block");
+    isSuccess.classList.remove("d-block");
+    isSuccess.classList.add("d-none");
+  }
+});
 
-function isSuccess() {
-  alert2.style.display = "inline";
-}
+//function isSuccess() {
+//alert2.style.display = "inline";
+//}
 
-function isFail() {
-  alert1.style.display = "inline";
-}
+//function isFail() {
+//alert1.style.display = "inline";
+//}
 
 firstName.addEventListener("focusout", () => {
   isText(firstName.value) ? isValid(firstName) : isInValid(firstName);
@@ -43,8 +58,16 @@ city.addEventListener("focusout", () => {
   isText(city.value) ? isValid(city) : isInValid(city);
 });
 
-state.addEventListener("focusout", () => {
-  isText(state.value) ? isValid(state) : isInValid(state);
+let stateValues = [];
+for (const state in states) {
+  stateValues.push(states[state].value);
+  //console.log(stateValues);
+}
+
+STATE.addEventListener("focusout", () => {
+  stateValues.some(statexmp => statexmp == STATE.value)
+    ? isValid(STATE)
+    : isInValid(STATE);
 });
 
 cvc.addEventListener("focusout", () => {
@@ -56,7 +79,7 @@ cvc.addEventListener("focusout", () => {
 });
 
 amount.addEventListener("focusout", () => {
-  if (amount.value <= 20000) {
+  if (amount.value <= 20000 && amount.value > 0) {
     isValid(amount);
   } else {
     isInValid(amount);
@@ -73,8 +96,8 @@ myPostalCode.addEventListener("focusout", () => {
 
 cardNumber.addEventListener("focusout", () => {
   if (
-    cardNumber.value.length >= 16 &&
-    cardNumber.value.length <= 19 &&
+    //cardNumber.value.length == 16 ||
+    //cardNumber.value.length == 19 ||
     valid_credit_card(cardNumber.value)
   ) {
     isValid(cardNumber);
@@ -84,13 +107,11 @@ cardNumber.addEventListener("focusout", () => {
 });
 
 const isValid = input => {
-  counter += 1;
   input.classList.remove("is-invalid");
   input.classList.add("is-valid");
 };
 
 const isInValid = input => {
-  counter -= 1;
   input.classList.remove("is-valid");
   input.classList.add("is-invalid");
 };
